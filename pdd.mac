@@ -1,0 +1,49 @@
+# =========================
+# beamdiag_template.mac
+# One run produces:
+#  - PDD (1D) in water along CAX
+#  - Exit plane 2D dose (water surface slab)
+#  - Exit plane 2D fluence
+# =========================
+
+/control/verbose 1
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+# Source
+/control/execute ../macros/conv9source.mac
+
+# Init
+/run/initialize
+
+# -------------------------
+# (A) PDD mesh (1D along Z)
+# -------------------------
+/score/create/boxMesh pdd1D
+/score/mesh/boxSize 50 50 40 mm      # => full 100×100 mm², depth 80 mm
+/score/mesh/nBin    1   1   160        # 0.5 mm bins
+/score/mesh/translate/xyz 0 0 505.4 mm  # phantomFrontZ + 40 mm
+/score/quantity/doseDeposit dose
+/score/close
+
+# -------------------------
+# (B) Exit plane 2D mesh (water surface slab)
+# -------------------------
+/score/create/boxMesh exit2D
+/score/mesh/boxSize 50 50 0.25 mm      # 100×100 mm, 0.5 mm thick
+/score/mesh/nBin    240 240 1          # 100mm/200 = 0.5mm pixels
+/score/mesh/translate/xyz 0 0 465.65 mm  # phantomFrontZ + 0.25 mm
+/score/quantity/doseDeposit dose
+/score/quantity/cellFlux    fluence
+/score/close
+
+# Run
+/run/beamOn BEAMON
+#/run/beamOn 100
+
+# Dump all outputs
+/score/dumpQuantityToFile pdd1D  dose   PDD_TXT
+/score/dumpQuantityToFile exit2D dose   EXIT_DOSE_TXT
+/score/dumpQuantityToFile exit2D fluence EXIT_FLUENCE_TXT
+

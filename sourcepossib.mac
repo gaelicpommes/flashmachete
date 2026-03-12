@@ -1,0 +1,24 @@
+#sourcepossib.mac
+
+
+/control/macroPath macros
+/gps/verbose 0
+/gps/particle e-
+
+/gps/ene/type Gauss
+/gps/ene/mono EMEAN MeV
+/gps/ene/sigma SIGE MeV
+
+/gps/ang/type beam2d
+/gps/ang/rot1 1 0 0
+/gps/ang/rot2 0 -1 0
+/gps/ang/sigma_x SIGTH deg
+/gps/ang/sigma_y SIGTH deg
+
+/gps/pos/type Beam
+/gps/pos/centre 0 0 0 mm
+/gps/pos/sigma_x SX mm
+/gps/pos/sigma_y SY mm
+
+
+/gps/pos/confine SourceCutoffPV
