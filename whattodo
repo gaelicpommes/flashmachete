@@ -1,0 +1,135 @@
+Rmax 15
+R90 27
+R80 31
+R50 39
+
+sbatch --array=1-1 run_pddgrid.slurm
+ 
+wsl -d Ubuntu-22.04
+cd ~/FlashElectronSim/build
+
+cd /scratch/brussel/113/vsc11383/projects/third_sim/FlashElectronSim/
+
+source env_flash.sh
+
+source en
+
+salloc --time=10:00:00 --cpus-per-task=1 --mem=4G
+srun --pty bash -l
+srun --jobid=50014688 --pty bash -l (change the jobid)
+hostname
+to start jupyter:
+salloc --time=10:00:00 --cpus-per-task=2 --mem=4G
+module purge
+module load Python/3.12.3-GCCcore-13.3.0
+source ~/venvs/flash_py312/bin/activate
+jupyter lab --no-browser --ip=0.0.0.0 --port=8888
+
+
+unset SLURM_MEM_PER_CPU
+srun --pty bash -l
+hostname
+module purge
+module load Python/3.12.3-GCCcore-13.3.0
+source ~/venvs/flash_py312/bin/activate
+
+cd /scratch/brussel/113/vsc11383/projects/third_sim/FlashElectronSim/
+jupyter lab --no-browser --ip=0.0.0.0 --port=8888
+
+
+
+nano ~/.bashrc
+
+sbatch run_pdd.slurm
+
+squeue -u vsc11383
+
+./FlashElectronSim
+
+/control/macroPath macros
+
+
+/control/execute vis.mac          
+#/control/execute conv9source.mac
+/control/execute pdd.mac
+
+/run/beamOn 3000
+/score/dumpQuantityToFile pddMesh dose pdd_dose.txt
+
+
+/vis/viewer/flush
+
+Then in Qt:
+
+
+/control/execute source.mac
+/run/beamOn 50
+/vis/viewer/flush
+
+
+/control/execute vis.mac          
+/control/execute conv9source.mac
+/control/execute pdd.mac
+
+./FlashElectronSim ../macros/pdd.mac
+
+make clean
+cmake ..
+make -j
+
+----------
+
+/vis/open OGLSQt
+/vis/scene/create
+/vis/scene/add/volume
+/vis/drawVolume
+/vis/viewer/flush
+
+/run/initialize
+/tracking/storeTrajectory 1
+/vis/scene/add/trajectories smooth
+/vis/scene/endOfEventAction accumulate 50
+
+# quick test source (no macros)
+#/gps/particle e-
+#/gps/ene/type Mono
+#/gps/ene/mono 9 MeV
+#/gps/pos/type Point
+#/gps/pos/centre 0 0 -1 cm
+#/gps/direction 0 0 1
+
+/run/beamOn 500
+/vis/viewer/flush
+
+/vis/filtering/trajectories/create/particleFilter primOnly
+/vis/filtering/trajectories/particleFilter-0/add e-
+/vis/filtering/trajectories/particleFilter-0/invert false
+/vis/filtering/trajectories/apply primOnly
+
+
+# macros/source.mac  (Geant4 GPS - manufacturer beam model at window plane)
+# Note: Your Geant4 GPS likely does NOT support cutoff_x/cutoff_y. We approximate with Gaussian + geometry collimation.
+
+/gps/particle e-
+/gps/ene/type Mono
+/gps/ene/mono 9.5 MeV
+
+# Gaussian spot at the eWindow reference plane (z=0)
+# Cutoff ~2.2 mm corresponds roughly to ~3σ => σ ≈ 0.73 mm
+/gps/pos/type Beam
+/gps/pos/centre 0 0 0 mm
+/gps/pos/sigma_x 0.73 mm
+/gps/pos/sigma_y 0.73 mm
+
+# Start with pencil direction along +Z (add divergence later if needed)
+/gps/direction 0 0 1
+
+
+make clean
+cmake ..
+make -j
+
+
+cp ~/FlashElectronSim/build/pdd_dose.txt /mnt/c/Users/irish/Desktop/
+
+

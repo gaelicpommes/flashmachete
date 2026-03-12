@@ -1,0 +1,39 @@
+real measurements
+
+Rmax 15
+R90 27
+R80 31
+R50 39
+
+what im getting 9.0 300k 0.73mm
+Rmax 17
+R90 26
+R80 28
+R50 34
+
+tune energy to match r50, upping energy pushes R50 deeper
+
+tune divergence to fix dmax (and kinda R80/R90 slope)
+
+then if needed adjust source spot size(sigma x/y)
+
+what im getting 9.3 300k 0.73mm
+Rmax 16.25
+R90 26.47
+R80 29.47
+R50 35.51
+
+
+what im getting 10 300k sigmax,y 0.73mm
+Rmax 17
+R90 28
+R80 31
+R50 38
+
+what im getting 10 300k sigmax,y 0.65mm
+Rmax 16.25
+R90 28.68
+R80 32.141
+R50 38.556
+
+
