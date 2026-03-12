@@ -1,2 +1,2 @@
 # flashmachete
-This is a beam model of the flashknife, so all you gotta do is install the files in your windows/linux device and then install geant4 and then thats it
+this is a mc simulation geant4 of the flashcoteau
