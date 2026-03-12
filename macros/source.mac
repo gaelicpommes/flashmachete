@@ -1,0 +1,16 @@
+# macros/source.mac  (Geant4 GPS - manufacturer beam model at window plane)
+# Note: Your Geant4 GPS likely does NOT support cutoff_x/cutoff_y. We approximate with Gaussian + geometry collimation.
+
+/gps/particle e-
+/gps/ene/type Mono
+/gps/ene/mono 9.5 MeV
+
+# Gaussian spot at the eWindow reference plane (z=0)
+# Cutoff ~2.2 mm corresponds roughly to ~3σ => σ ≈ 0.73 mm
+/gps/pos/type Beam
+/gps/pos/centre 0 0 0 mm
+/gps/pos/sigma_x 0.73 mm
+/gps/pos/sigma_y 0.73 mm
+
+# Start with pencil direction along +Z (add divergence later if needed)
+/gps/direction 0 0 1
